@@ -8,6 +8,12 @@ import Chart from 'chart.js';
 
 export default {
     name: "HomeChart",
+    props: {
+        hourData: {
+            type: Array,
+            default: () => []
+        },
+    },
     data() {
         return {
             MyData: {}
@@ -15,13 +21,13 @@ export default {
     },
     mounted () {
         var ctx = document.getElementById("myChart");
-        var myChart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'pie',
             data: {
                 labels: ['Taken', 'Planned', 'Available'],
                 datasets: [{
                 label: 'Hours Summary',
-                data: [20, 40, 40],
+                data: this.hourData || [36,56,8],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
                     'rgba(54, 162, 235, 0.2)',
@@ -43,7 +49,6 @@ export default {
 
             }
         });
-        console.log(myChart);
     }
 }
 </script>

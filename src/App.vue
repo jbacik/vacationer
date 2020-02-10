@@ -1,11 +1,23 @@
 <template>
   <div id="app">
     <b-navbar type="dark" variant="info">
-      <b-navbar-brand><a href="#" @click="showDashboard">vacationer</a></b-navbar-brand>
+      <b-navbar-brand><a href="#" @click.prevent="showDashboard">vacationer</a></b-navbar-brand>
     </b-navbar>
     <HomeDashboard v-show="activePage == 'dashboard'" :hours="hours" @toggleList="toggleList"/>
-    <HourListing title="Taken Hours" v-show="activePage == 'taken'" :items="takenHours"></HourListing>
-    <HourListing title="Planned Hours" v-show="activePage == 'planned'" :items="plannedHours"></HourListing>
+    
+    <HourListing title="Taken Hours" 
+      v-show="activePage == 'taken'" 
+      :items="takenHours"
+      isPlanned="false" 
+      @addHours="addHours"
+      @removeItem="removeItem" />
+      
+    <HourListing title="Planned Hours" 
+      v-show="activePage == 'planned'" 
+      :items="plannedHours" 
+      isPlanned="true" 
+      @addHours="addHours"
+      @removeItem="removeItem" />
   </div>
 </template>
 
@@ -34,17 +46,26 @@ export default {
     toggleList(target) {
       this.activePage = target;
     },
-    // addTaken(newItem) {
-    //   console.log('add taken', newItem);
-    //   this.hours.push({
-    //       id: this.newIdx++,
-    //       userId: 3,
-    //       vacationStartDate: newItem.startDate,
-    //       vacationEndDate: newItem.endDate,
-    //       vacationHours: newItem.hours,
-    //       isPlanned: false
-    //   });
-    // },
+    addHours(newItem, isPlanned) {
+      console.log('add taken', newItem);
+
+      this.hours.push({
+          id: this.newIdx++,
+          userId: 3,
+          vacationStartDate: newItem.startDate,
+          vacationEndDate: newItem.endDate,
+          vacationHours: parseFloat(newItem.hours),
+          isPlanned: isPlanned
+      });
+    },
+    removeItem(id) {
+      
+      var indexToRemove = this.hours.findIndex((el) => el.id === id);
+      console.log('remove hours', id, indexToRemove);
+      if (indexToRemove !== undefined && indexToRemove >= 0){
+        this.hours.splice(indexToRemove, 1);
+      }
+    },
     async loadUserHours() {
       this.hours = await data.getHours(3);
       this.newIdx = this.hours.length;

@@ -7,7 +7,7 @@
                   <div class="stats-group__value" id="taken">
                       <span>{{this.takenHours}}</span>
                       <b-button variant="default" size="sm" @click="showTakenList">
-                          <b-icon-list></b-icon-list>
+                          <b-icon-pencil />
                       </b-button>
                   </div>
               </div>
@@ -16,7 +16,7 @@
                   <div class="stats-group__value" id="planned">
                       <span>{{this.plannedHours}}</span>
                       <b-button variant="default" size="sm" @click="showPlannedList">
-                          <b-icon-list></b-icon-list>
+                          <b-icon-pencil />
                       </b-button>
                 </div>
               </div>
@@ -30,7 +30,7 @@
               </div>
           </b-col>
           <b-col class="dashboard-container__summary">
-              <HomeChart :chartdata="chartData" :options="chartOptions"/>
+              <HomeChart :hourData="chartData" :options="chartOptions" :key="hoursIdx" />
               <div class="chart-info">
                   <div>Effective On: {{userInfo.vacationPoolStartDate}}</div>
                   <div>Total Hours: {{userInfo.vacationPoolHours}}</div>
@@ -56,7 +56,6 @@ export default {
     data() {
         return {
             userInfo: {},
-            chartData: null,
             chartOptions: null
         }
     },    
@@ -92,6 +91,13 @@ export default {
         },
         availableHours() {
             return this.userInfo.vacationPoolHours - (this.takenHours + this.plannedHours);
+        },
+        chartData() {
+            return [this.takenHours, this.plannedHours, this.availableHours];
+        },
+        hoursIdx(){
+            //rerender key hack, sum all the current indexes.... learn to fix this
+            return this.hours.map(h => h.id).reduce((a, b) => a + b, 0);
         }
     }
 }

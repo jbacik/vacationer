@@ -10,17 +10,27 @@
                 </tr>
           </thead>
           <tbody>
-                <tr v-for="item in items" :key="item.id" >
+                <tr v-for="item in items" :key="item.id">
                     <td>
-                        <span>{{getDisplayDate(item)}}</span>
+                        <span v-show="selectedItem != item">{{getDisplayDate(item)}}</span>
+                        <b-input-group v-show="selectedItem == item">
+                            <b-input v-model="item.vacationStartDate" placeholder="Start Date" aria-label="Start Date" />
+                            <b-input v-model="item.vacationEndDate" placeholder="End Date" aria-label="End Date" />
+                        </b-input-group>                        
                     </td>
                     <td>
-                        <span>{{item.vacationHours}}</span>
+                        <span v-show="selectedItem != item">{{item.vacationHours}}</span>
+                        <b-input v-show="selectedItem == item" class="text-center" v-model="item.vacationHours" placeholder="Hours" aria-label="Hours" />
                     </td>
                     <td>
-                        <b-button variant="secondary" size="sm" @click="editDate">
-                            <b-icon-pencil>Edit</b-icon-pencil>
-                        </b-button>
+                        <b-button-group>
+                            <b-button variant="secondary" size="sm" @click="editDate(item)">
+                                <b-icon-pencil>Edit</b-icon-pencil>
+                            </b-button>
+                            <b-button class="text-danger" variant="outline-default" size="sm" @click="removeItem(item.id)">
+                                <b-icon-x-square>Remove</b-icon-x-square>
+                            </b-button>
+                        </b-button-group>
                     </td>
                 </tr>
           </tbody>
@@ -65,34 +75,34 @@ export default {
         items: {
             type: Array,
             default: () => []
+        },
+        isPlanned: {
+            type: String,
+            default: () => "true"
         }
     },
     data() {
         return {
-            newItem: {}
+            newItem: {},
+            selectedItem: {}
         }
     },
     methods: {
         addNewItem () {
-            //this.$emit('addTaken', this.newItem);
-            // //emit
-            // this.items.push({
-            //     id: this.newIdx++,
-            //     userId: 3,
-            //     vacationStartDate: this.newItem.startDate,
-            //     vacationEndDate: this.newItem.endDate,
-            //     vacationHours: this.newItem.hours
-            // });
+            this.$emit('addHours', this.newItem, (this.isPlanned === "true"));
             this.newItem = {};
         },
-        getDisplayDate(item) {
+        removeItem (id) {
+            this.$emit('removeItem', id);
+        },
+        getDisplayDate (item) {
             if (item.vacationStartDate === item.vacationEndDate)
                 return item.vacationStartDate; //format(item.vacationStartDate, 'MM/DD');
             else
                 return `${item.vacationStartDate} - ${item.vacationEndDate}` //`${format(item.vacationStartDate, 'MM/DD')} - ${format(item.vacationEndDate, 'MM/DD')}`;                
         },
-        editDate() {
-            console.log('edit it');
+        editDate (item) {
+            this.selectedItem = item;
         }
     },
     filters: {
