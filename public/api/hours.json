@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "userId": 3,
+        "vacationStartDate": "11/27/2019",
+        "vacationEndDate": "11/27/2019",
+        "vacationHours": 8,
+        "isPlanned": false
+    },
+    {
+        "id": 2,
+        "userId": 3,
+        "vacationStartDate": "12/26/2019",
+        "vacationEndDate": "12/27/2019",
+        "vacationHours": 16,
+        "isPlanned": false
+    },
+    {
+        "id": 4,
+        "userId": 3,
+        "vacationStartDate": "12/31/2019",
+        "vacationEndDate": "01/02/2020",
+        "vacationHours": 12,
+        "isPlanned": false
+    },
+    {
+        "id": 5,
+        "userId": 3,
+        "vacationStartDate": "04/10/2020",
+        "vacationEndDate": "04/13/2020",
+        "vacationHours": 16,
+        "isPlanned": true
+    },
+    {
+        "id": 6,
+        "userId": 3,
+        "vacationStartDate": "05/18/2020",
+        "vacationEndDate": "05/25/2020",
+        "vacationHours": 40,
+        "isPlanned": true
+    }
+]

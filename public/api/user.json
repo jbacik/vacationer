@@ -1,0 +1,8 @@
+{
+    "id": 3,
+    "firstName": "Tessa",
+    "lastName": "Tester",
+    "userName": "tests",
+    "vacationPoolStartDate" : "11/23/2019",
+    "vacationPoolHours": 100
+}
