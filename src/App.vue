@@ -4,20 +4,22 @@
       <b-navbar-brand><a href="#" @click.prevent="showDashboard">vacationer</a></b-navbar-brand>
     </b-navbar>
     <HomeDashboard v-show="activePage == 'dashboard'" :hours="hours" @toggleList="toggleList"/>
-    
+
     <HourListing title="Taken Hours" 
       v-show="activePage == 'taken'" 
       :items="takenHours"
       isPlanned="false" 
       @addHours="addHours"
-      @removeItem="removeItem" />
+      @removeItem="removeItem"
+      @updateItem="updateItem" />
       
     <HourListing title="Planned Hours" 
       v-show="activePage == 'planned'" 
       :items="plannedHours" 
       isPlanned="true" 
       @addHours="addHours"
-      @removeItem="removeItem" />
+      @removeItem="removeItem"
+      @updateItem="updateItem" />
   </div>
 </template>
 
@@ -59,11 +61,15 @@ export default {
       });
     },
     removeItem(id) {
-      
       var indexToRemove = this.hours.findIndex((el) => el.id === id);
-      console.log('remove hours', id, indexToRemove);
       if (indexToRemove !== undefined && indexToRemove >= 0){
         this.hours.splice(indexToRemove, 1);
+      }
+    },
+    updateItem(item) {
+      var indexToRemove = this.hours.findIndex((el) => el.id === item.id);
+      if (indexToRemove !== undefined && indexToRemove >= 0){
+        this.hours[indexToRemove] = item;
       }
     },
     async loadUserHours() {

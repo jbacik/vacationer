@@ -20,15 +20,23 @@
                     </td>
                     <td>
                         <span v-show="selectedItem != item">{{item.vacationHours}}</span>
-                        <b-input v-show="selectedItem == item" class="text-center" v-model="item.vacationHours" placeholder="Hours" aria-label="Hours" />
+                        <b-input v-show="selectedItem == item" type="number" class="text-center" v-model="item.vacationHours" placeholder="Hours" aria-label="Hours" />
                     </td>
                     <td>
-                        <b-button-group>
-                            <b-button variant="secondary" size="sm" @click="editDate(item)">
+                        <b-button-group v-show="selectedItem != item">
+                            <b-button variant="secondary" size="sm" @click="toggleEdit(item)">
                                 <b-icon-pencil>Edit</b-icon-pencil>
                             </b-button>
                             <b-button class="text-danger" variant="outline-default" size="sm" @click="removeItem(item.id)">
                                 <b-icon-x-square>Remove</b-icon-x-square>
+                            </b-button>
+                        </b-button-group>
+                        <b-button-group v-show="selectedItem == item">
+                            <b-button variant="success" size="sm" @click="updateItem(item)">
+                                <b-icon-check>Save</b-icon-check>
+                            </b-button>
+                            <b-button variant="outline-default" size="sm" @click="toggleEdit()">
+                                <b-icon-circle-slash>Cancel</b-icon-circle-slash>
                             </b-button>
                         </b-button-group>
                     </td>
@@ -93,7 +101,9 @@ export default {
             this.newItem = {};
         },
         removeItem (id) {
-            this.$emit('removeItem', id);
+            if (confirm('Are you sure you want to remove this?')){
+                this.$emit('removeItem', id);
+            }
         },
         getDisplayDate (item) {
             if (item.vacationStartDate === item.vacationEndDate)
@@ -101,8 +111,13 @@ export default {
             else
                 return `${item.vacationStartDate} - ${item.vacationEndDate}` //`${format(item.vacationStartDate, 'MM/DD')} - ${format(item.vacationEndDate, 'MM/DD')}`;                
         },
-        editDate (item) {
+        toggleEdit (item) {
             this.selectedItem = item;
+        },
+        updateItem (item) {
+            item.vacationHours = parseFloat(item.vacationHours);
+            this.$emit('updateItem', item);
+            this.toggleEdit();
         }
     },
     filters: {
@@ -114,5 +129,8 @@ export default {
 </script>
 
 <style>
+    .flatpickr-input.form-control[readonly]{
+        background-color:#fff;
+    }
 
 </style>
