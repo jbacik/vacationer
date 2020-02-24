@@ -7,7 +7,8 @@ import { API } from './config';
 
 const getUserInfo = async function () {
   try {
-    const response = await axios.get(`${API}/user.json`);
+    //const response = await axios.get(`${API}/user.json`);
+    const response = await axios.get(`http://localhost:5000/Users/GetUser`);
     let data = parseObject(response);
     return data;
   } catch (error) {
@@ -35,7 +36,6 @@ const getHours = async function(userId) {
   }
 };
 /* eslint-enable no-unused-vars */
-
 
 const parseList = response => {
   if (response.status !== 200) throw Error(response.message);

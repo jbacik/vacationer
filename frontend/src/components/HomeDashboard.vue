@@ -61,6 +61,7 @@ export default {
     },    
     async created() {
         await this.loadUserInfo();
+        await this.getWeatherTemp();
     },
     methods : {
         async loadUserInfo() {
