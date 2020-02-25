@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using backend.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Handlers.Users 
 {
@@ -24,15 +27,26 @@ namespace backend.Handlers.Users
 
         public class QueryHandler : IRequestHandler<Query, QueryResult>
         {
+            private readonly VacationContext _db;
+
+            public QueryHandler(VacationContext db) => _db = db;
+
             public async Task<QueryResult> Handle(Query request, CancellationToken cancellationToken)
             {
+                var result = await _db.Users.Where(u => u.Id == request.Id)
+                                .Include(v => v.VacationPools)
+                                .Where(v => v.IsActive)
+                                .FirstOrDefaultAsync();
+
+                if (result == null) return null;
+
                 return new QueryResult{
-                    Id = 3,
-                    FirstName = "Static",
-                    LastName = "Data",
-                    UserName = "staticapi",
-                    VacationPoolStartDate = new DateTime(2020,01,01),
-                    VacationPoolHours = 100
+                    Id = result.Id,
+                    FirstName = result.FirstName,
+                    LastName = result.LastName,
+                    UserName = result.UserName,
+                    VacationPoolHours = result.VacationPools.FirstOrDefault().Hours,
+                    VacationPoolStartDate = result.VacationPools.FirstOrDefault().StartDate
                 };
             }
         }

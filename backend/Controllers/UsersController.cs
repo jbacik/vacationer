@@ -19,6 +19,8 @@ namespace backend.Controllers
         public async Task<IActionResult> GetUser(int id){
             _logger.LogInformation("Getting user - {0}", id);
             var result = await _mediator.Send(new UserDetail.Query(){ Id = id});
+            if (result == null) return NotFound();
+
             return Ok(result);
         }
     }

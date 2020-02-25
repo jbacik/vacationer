@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MediatR;
+using backend.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend
 {
@@ -27,8 +29,12 @@ namespace backend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup));
+            
             services.AddCors();
-            services.AddControllers();            
+            services.AddControllers();         
+            services.AddDbContext<VacationContext>(
+                options => options.UseInMemoryDatabase(databaseName: "Vacationer")
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
