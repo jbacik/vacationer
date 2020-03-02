@@ -12,5 +12,6 @@ namespace backend.Data
 
         public DbSet<User> Users { get; set;}
         public DbSet<VacationPool> VacationPools { get; set; }
+        public DbSet<VacationTime> VacationTimes { get; set; }
     }
 }

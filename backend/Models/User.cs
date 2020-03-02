@@ -16,5 +16,6 @@ namespace backend.Models
         public string LastModifiedBy { get; set; }
 
         public ICollection<VacationPool> VacationPools { get; set; }
+        public ICollection<VacationTime> VacationTimes { get; set; }
     }
 }
