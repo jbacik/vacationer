@@ -3,17 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models 
 {
-    public class VacationPool : IEntity
+    public class VacationTime : IEntity
     {
-        [Column("VacationPoolId")]
-        public int Id {get;set;}
-        public DateTime StartDate {get;set;}
+        [Column("VacationTimeId")]
+        public int Id { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public double Hours { get; set; }
-        public bool IsActive {get;set;}
+        public bool IsPlanned { get; set; }
         public DateTime LastModifiedOn {get;set;} = DateTime.UtcNow;
         public string LastModifiedBy { get; set; }
         public int UserId { get; set; }
-
         public User User { get; set; }
     }
 }
