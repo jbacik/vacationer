@@ -17,9 +17,6 @@ namespace backend.integrationtests.Handlers.VacationTimes
         [Fact]
         public async Task Should_create_new_vacationtime()
         {
-            var builder = new DbContextOptionsBuilder();
-            builder.UseInMemoryDatabase("CreateNewVacationTime");
-
             var user = new User
             {
                 FirstName = "George",

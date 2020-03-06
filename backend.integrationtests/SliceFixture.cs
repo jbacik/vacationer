@@ -1,5 +1,6 @@
 ﻿using backend.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -27,6 +28,9 @@ namespace backend.integrationtests
             startup.ConfigureServices(services);
             var provider = services.BuildServiceProvider();
             _scopeFactory = provider.GetService<IServiceScopeFactory>();
+
+            var dbBuilder = new DbContextOptionsBuilder();
+            dbBuilder.UseInMemoryDatabase("VacationTime-Tests");
         }
 
         public static async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
@@ -58,5 +62,37 @@ namespace backend.integrationtests
 
         public static Task ExecuteDbContextAsync(Func<VacationContext, IMediator, Task> action)
             => ExecuteScopeAsync(sp => action(sp.GetService<VacationContext>(), sp.GetService<IMediator>()));
+
+        public static Task InsertAsync<TEntity>(TEntity entity) where TEntity : class
+        {
+            return ExecuteDbContextAsync(db =>
+            {
+                db.Set<TEntity>().Add(entity);
+
+                return db.SaveChangesAsync();
+            });
+        }
+
+        public static Task InsertAsync<T>(params T[] entities) where T : class
+        {
+            return ExecuteDbContextAsync(db =>
+            {
+                foreach (var entity in entities)
+                {
+                    db.Set<T>().Add(entity);
+                }
+                return db.SaveChangesAsync();
+            });
+        }
+        
+        public static Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+        {
+            return ExecuteScopeAsync(sp =>
+            {
+                var mediator = sp.GetService<IMediator>();
+
+                return mediator.Send(request);
+            });
+        }
     }
 }

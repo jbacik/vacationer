@@ -10,9 +10,9 @@ using backend.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Handlers 
+namespace backend.Handlers.VacationTimes
 {
-    public class VacationTimesList
+    public class List
     {
         public class Query : IRequest<QueryResult>
         {
@@ -60,7 +60,10 @@ namespace backend.Handlers
                     UserId = request.UserId
                 };
 
-                result.VacationTimes = await _db.VacationTimes.Where(v => v.UserId == request.UserId &&
+                var user = await _db.Users.FindAsync(request.UserId);
+                if (user == null || !user.IsActive) return null;
+
+                result.VacationTimes = await _db.VacationTimes.Where(v => v.UserId == user.Id &&
                                             v.IsPlanned == request.IsPlanned)
                                             .ProjectTo<QueryResult.VacationTimeModel>(_mapperConfig)
                                             .ToListAsync();

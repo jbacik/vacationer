@@ -16,7 +16,7 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserVacationTimes(VacationTimesList.Query query)
+        public async Task<IActionResult> GetUserVacationTimes(Handlers.VacationTimes.List.Query query)
         {
             var result = await _mediator.Send(query);
             if (result == null) return BadRequest("Unable to find vacation times for the given user");   
