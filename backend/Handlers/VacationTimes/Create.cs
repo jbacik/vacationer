@@ -37,6 +37,9 @@ namespace backend.Handlers.VacationTimes
 
             public async Task<int> Handle(Command request, CancellationToken token)
             {
+                var user = await _db.Users.FindAsync(request.UserId);
+                if (user == null || !user.IsActive) return 0;
+
                 var vacationTime = _mapper.Map<Command, VacationTime>(request);
                 _db.VacationTimes.Add(vacationTime);
 
