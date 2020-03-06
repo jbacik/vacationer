@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models 
@@ -6,6 +7,7 @@ namespace backend.Models
     public class VacationTime : IEntity
     {
         [Column("VacationTimeId")]
+        [Key]
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

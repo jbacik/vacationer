@@ -22,5 +22,13 @@ namespace backend.Controllers
             if (result == null) return BadRequest("Unable to find vacation times for the given user");   
             return Ok(result);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUserVacationTime(Handlers.VacationTimes.Create.Command command)
+        {
+            var result = await _mediator.Send(command);
+            if (result <= 0) return BadRequest("Unable to create vacation time for the given user");
+            return Ok(result);
+        }
     }
 }
