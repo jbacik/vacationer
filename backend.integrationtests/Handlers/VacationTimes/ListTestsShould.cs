@@ -12,7 +12,7 @@ namespace backend.integrationtests.Handlers.VacationTimes
     public class ListTestsShould
     {
         [Fact]
-        public async Task ReturnAllActualTimes()
+        public async Task ReturnAllVacationTime()
         {
             var user = new User
             {
@@ -39,64 +39,25 @@ namespace backend.integrationtests.Handlers.VacationTimes
                 StartDate = new DateTime(2020, 06, 15),
                 EndDate = new DateTime(2020, 06, 18),
                 Hours = 20,
-                IsPlanned = false
+                IsPlanned = true
             };
 
             await InsertAsync(springPTO, summerPTO);
 
             var query = new backend.Handlers.VacationTimes.List.Query() 
             {
-                UserId = user.Id,
-                IsPlanned = false
+                UserId = user.Id
             };
             var result = await SendAsync(query);
 
             result.ShouldNotBeNull();
             result.VacationTimes.Count.ShouldBeGreaterThanOrEqualTo(2);
-        }
 
-        [Fact]
-        public async Task ReturnAllPlannedTimes()
-        {
-            var user = new User
-            {
-                FirstName = "George",
-                LastName = "Costanza",
-                UserName = $"tbone{Guid.NewGuid()}",
-                IsActive = true
-            };
+            var plannedTimes = result.VacationTimes.Where(t => t.IsPlanned);
+            var actualTimes = result.VacationTimes.Where(t => !t.IsPlanned);
 
-            await InsertAsync(user);
-
-            var fallPTO = new VacationTime
-            {
-                UserId = user.Id,
-                StartDate = new DateTime(2020, 10, 05),
-                EndDate = new DateTime(2020, 10, 09),
-                Hours = 40,
-                IsPlanned = true
-            };
-
-            var winterPTO = new VacationTime
-            {
-                UserId = user.Id,
-                StartDate = new DateTime(2020, 12, 24),
-                EndDate = new DateTime(2020, 12, 24),
-                Hours = 4,
-                IsPlanned = true
-            };
-
-            await InsertAsync(fallPTO, winterPTO);
-
-            var query = new backend.Handlers.VacationTimes.List.Query() 
-            {
-                UserId = user.Id,
-                IsPlanned = true
-            };
-            var result = await SendAsync(query);
-
-            result.ShouldNotBeNull();
-            result.VacationTimes.Count.ShouldBeGreaterThanOrEqualTo(2);
+            plannedTimes.Count().ShouldBeGreaterThanOrEqualTo(1);
+            actualTimes.Count().ShouldBeGreaterThanOrEqualTo(1);
         }
 
         [Fact]
@@ -105,11 +66,7 @@ namespace backend.integrationtests.Handlers.VacationTimes
             int? lastUserId = await ExecuteDbContextAsync(db => db.Users.OrderBy(u => u.Id).Select(u => u.Id).LastOrDefaultAsync());
             int nextUserId = (lastUserId ?? 0) + 1;
 
-            var query = new backend.Handlers.VacationTimes.List.Query() 
-            {
-                UserId = nextUserId,
-                IsPlanned = true
-            };
+            var query = new backend.Handlers.VacationTimes.List.Query() { UserId = nextUserId };
             var result = await SendAsync(query);
 
             result.ShouldBeNull();
@@ -128,16 +85,11 @@ namespace backend.integrationtests.Handlers.VacationTimes
 
             await InsertAsync(newUser);
 
-            var query = new backend.Handlers.VacationTimes.List.Query() 
-            {
-                UserId = newUser.Id,
-                IsPlanned = true
-            };
+            var query = new backend.Handlers.VacationTimes.List.Query() { UserId = newUser.Id };
             var result = await SendAsync(query);
 
             result.ShouldNotBeNull();
             result.VacationTimes.ShouldBeEmpty();
-
         }
 
         [Fact]

@@ -17,7 +17,6 @@ namespace backend.Handlers.VacationTimes
         public class Query : IRequest<QueryResult>
         {
             public int UserId { get; set; }
-            public bool IsPlanned { get; set; }
         }
 
         public class QueryResult
@@ -63,11 +62,9 @@ namespace backend.Handlers.VacationTimes
                 var user = await _db.Users.FindAsync(request.UserId);
                 if (user == null || !user.IsActive) return null;
 
-                result.VacationTimes = await _db.VacationTimes.Where(v => v.UserId == user.Id &&
-                                            v.IsPlanned == request.IsPlanned)
+                result.VacationTimes = await _db.VacationTimes.Where(v => v.UserId == user.Id)
                                             .ProjectTo<QueryResult.VacationTimeModel>(_mapperConfig)
-                                            .ToListAsync();
-                
+                                            .ToListAsync();                
                 return result;
             }
         }
